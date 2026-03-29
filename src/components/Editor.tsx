@@ -225,7 +225,7 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
           </button>
           <button
             onClick={() => onPreview(blocks, theme)}
-            className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5"
+            className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600"
           >
             <Eye className="w-4 h-4" />
             Просмотр
@@ -237,6 +237,7 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
         {/* Sidebar */}
         {showSidebar && (
           <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto flex flex-col">
+            <>
             {/* Theme settings */}
             <div className="p-4 border-b border-gray-100">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Тема оформления</h3>
@@ -386,6 +387,7 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
                 )}
               </div>
             </div>
+            </>
           </div>
         )}
 
@@ -398,7 +400,6 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
               className="invitation-shadow rounded-2xl overflow-hidden min-h-[600px]"
               style={{ backgroundColor: theme.bgColor }}
             >
-              {/* Background pattern overlay */}
               <div className="relative">
                 {blocks.map((block) => (
                   <div

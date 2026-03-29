@@ -15,6 +15,7 @@ const themeColors: Record<string, { bg: string; border: string; badge: string }>
   'lavender-dream': { bg: 'from-purple-50 to-violet-50', border: 'border-purple-200', badge: 'bg-purple-100 text-purple-600' },
   'rustic-charm': { bg: 'from-amber-50 to-orange-50', border: 'border-amber-300', badge: 'bg-amber-100 text-amber-800' },
   'midnight-elegance': { bg: 'from-slate-800 to-slate-900', border: 'border-slate-600', badge: 'bg-slate-700 text-amber-300' },
+  'wedmaker-romance': { bg: 'from-amber-100 to-orange-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-700' },
 };
 
 export const TemplatesPage: React.FC<TemplatesPageProps> = ({ onBack, onSelect }) => {
