@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ArrowLeft, Eye, Plus, Trash2, ChevronUp, ChevronDown,
   Edit3, Heart, Save, Smartphone, Monitor, X, GripVertical,
@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { InvitationBlock, TemplateTheme, InvitationTemplate, Page } from '../types';
 import { RenderBlock } from './blocks/InvitationBlocks';
-import wedmakerTemplateHtmlRaw from '../../2/index.html?raw';
 
 interface EditorProps {
   template: InvitationTemplate;
@@ -31,24 +30,12 @@ const blockTypes = [
 export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview }) => {
   const [blocks, setBlocks] = useState<InvitationBlock[]>([...template.blocks]);
   const [theme, setTheme] = useState<TemplateTheme>({ ...template.theme });
-  const [customHtml, setCustomHtml] = useState(wedmakerTemplateHtmlRaw);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [showSidebar, setShowSidebar] = useState(true);
 
   const selectedBlock = blocks.find(b => b.id === selectedBlockId);
-  const isWedmakerHtmlTemplate = template.id === 'wedmaker-romance';
-
-  const iframeSrcDoc = useMemo(() => {
-    if (!isWedmakerHtmlTemplate) return '';
-    if (customHtml.includes('<base ')) return customHtml;
-
-    return customHtml.replace(
-      '<head>',
-      '<head><base href="/2/">',
-    );
-  }, [customHtml, isWedmakerHtmlTemplate]);
 
   const updateBlock = (id: string, content: Record<string, string>) => {
     setBlocks(prev => prev.map(b => b.id === id ? { ...b, content: { ...b.content, ...content } } : b));
@@ -237,14 +224,11 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
             {showSidebar ? 'Скрыть' : 'Панель'}
           </button>
           <button
-            onClick={() => !isWedmakerHtmlTemplate && onPreview(blocks, theme)}
-            disabled={isWedmakerHtmlTemplate}
-            className={`text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
-              isWedmakerHtmlTemplate ? 'bg-gray-300 cursor-not-allowed' : 'bg-rose-500 hover:bg-rose-600'
-            }`}
+            onClick={() => onPreview(blocks, theme)}
+            className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600"
           >
             <Eye className="w-4 h-4" />
-            {isWedmakerHtmlTemplate ? 'Недоступно в HTML-режиме' : 'Просмотр'}
+            Просмотр
           </button>
         </div>
       </div>
@@ -253,20 +237,7 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
         {/* Sidebar */}
         {showSidebar && (
           <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto flex flex-col">
-            {isWedmakerHtmlTemplate ? (
-              <div className="p-4 h-full flex flex-col gap-3">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">HTML шаблон из папки 2</h3>
-                <p className="text-xs text-gray-500">
-                  Этот шаблон открыт «точь-в-точь» из <code>2/index.html</code>. Редактируйте HTML ниже — изменения сразу видны справа.
-                </p>
-                <textarea
-                  value={customHtml}
-                  onChange={(e) => setCustomHtml(e.target.value)}
-                  className="flex-1 min-h-[360px] w-full px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-rose-300 resize-none"
-                />
-              </div>
-            ) : (
-              <>
+            <>
             {/* Theme settings */}
             <div className="p-4 border-b border-gray-100">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Тема оформления</h3>
@@ -417,7 +388,6 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
               </div>
             </div>
             </>
-            )}
           </div>
         )}
 
@@ -430,33 +400,25 @@ export const Editor: React.FC<EditorProps> = ({ template, onNavigate, onPreview 
               className="invitation-shadow rounded-2xl overflow-hidden min-h-[600px]"
               style={{ backgroundColor: theme.bgColor }}
             >
-              {isWedmakerHtmlTemplate ? (
-                <iframe
-                  title="Шаблон из папки 2"
-                  srcDoc={iframeSrcDoc}
-                  className="w-full min-h-[780px] border-0 bg-white"
-                />
-              ) : (
-                <div className="relative">
-                  {blocks.map((block) => (
-                    <div
-                      key={block.id}
-                      className={`editor-block relative cursor-pointer transition-all ${selectedBlockId === block.id ? 'ring-2 ring-rose-400 ring-offset-2 rounded-lg' : ''}`}
-                      onClick={() => setSelectedBlockId(block.id === selectedBlockId ? null : block.id)}
-                    >
-                      <RenderBlock block={block} theme={theme} />
-                    </div>
-                  ))}
+              <div className="relative">
+                {blocks.map((block) => (
+                  <div
+                    key={block.id}
+                    className={`editor-block relative cursor-pointer transition-all ${selectedBlockId === block.id ? 'ring-2 ring-rose-400 ring-offset-2 rounded-lg' : ''}`}
+                    onClick={() => setSelectedBlockId(block.id === selectedBlockId ? null : block.id)}
+                  >
+                    <RenderBlock block={block} theme={theme} />
+                  </div>
+                ))}
 
-                  {blocks.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-32 text-gray-400">
-                      <Plus className="w-12 h-12 mb-4 opacity-30" />
-                      <p className="text-lg">Добавьте блоки</p>
-                      <p className="text-sm opacity-60 mt-1">Используйте панель слева</p>
-                    </div>
-                  )}
-                </div>
-              )}
+                {blocks.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+                    <Plus className="w-12 h-12 mb-4 opacity-30" />
+                    <p className="text-lg">Добавьте блоки</p>
+                    <p className="text-sm opacity-60 mt-1">Используйте панель слева</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
