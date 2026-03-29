@@ -35,4 +35,11 @@ export interface Project {
   updatedAt: string;
 }
 
-export type Page = 'landing' | 'templates' | 'editor' | 'preview';
+export interface CustomTemplateProject {
+  id: string;
+  name: string;
+  entryFile: string;
+  files: Record<string, string>;
+}
+
+export type Page = 'landing' | 'templates' | 'editor' | 'preview' | 'custom-editor';
